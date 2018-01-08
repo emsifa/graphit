@@ -1,0 +1,49 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    books(page: Int): [Book!]!
+}
+
+type Mutation {
+    createUser(name: String!): User!
+}
+
+# Table buku
+type Book {
+	id: Int!
+    title: String
+    type: BookType!
+    # Book author
+    author: User!
+    something: String
+}
+
+type User {
+	id: Int!
+	name: String
+	books: [Book!]!
+}
+
+enum BookType {
+    MAGAZINE # Buku majalah
+    NOVEL # Kumpulan novel
+    COMIC # Komik & manga
+}
+
+interface Eloquent {
+    id: Int!
+    created_at: String!
+    updated_at: String!
+    deleted_at: String!
+}
+
+input BookData {
+    id: Int!
+    title: String
+    type: BookType!
+    author: User!
+    something: String
+}
