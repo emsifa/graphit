@@ -11,9 +11,9 @@ type Mutation {
     createUser(name: String!): User!
 }
 
-# Table buku
+# Source: table books
 type Book {
-	id: Int!
+    id: Int!
     title: String
     type: BookType!
     # Book author
@@ -22,9 +22,9 @@ type Book {
 }
 
 type User {
-	id: Int!
-	name: String
-	books: [Book!]!
+    id: Int!
+    name: String
+    books: [Book!]!
 }
 
 enum BookType {
@@ -37,7 +37,7 @@ interface Eloquent {
     id: Int!
     created_at: String!
     updated_at: String!
-    deleted_at: String!
+    deleted_at: String
 }
 
 input BookData {

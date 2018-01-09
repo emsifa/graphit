@@ -5,7 +5,7 @@ require(__DIR__.'/helpers.php');
 
 use Emsifa\Graphit\Graphit;
 
-$graphkit = new Graphit([
+$graphit = new Graphit([
     'schema' => __DIR__.'/schema.graphql',
     'namespace' => 'Example\App',
     'error.handler' => function ($errors) {
@@ -20,7 +20,7 @@ $graphkit = new Graphit([
     }
 ]);
 
-$result = $graphkit->execute("
+$result = $graphit->execute("
     {
         books {
             id,
