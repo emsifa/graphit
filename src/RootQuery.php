@@ -7,11 +7,11 @@ use GraphQL\Type\Definition\ObjectType;
 class RootQuery extends ObjectType
 {  
 
-    protected $graphkit;
+    protected $graphit;
 
-    public function __construct(Graphit $graphkit, array $queries)
+    public function __construct(Graphit $graphit, array $queries)
     {
-        $this->graphkit = $graphkit;
+        $this->graphit = $graphit;
         parent::__construct([
             'name' => 'Query',
             'fields' => $queries,
@@ -21,7 +21,7 @@ class RootQuery extends ObjectType
 
     public function resolveField($val, $args, $context, $info)
     {
-        $class = $this->graphkit->getQueryClass($info->fieldName);
+        $class = $this->graphit->getQueryClass($info->fieldName);
         $queryResolver = new $class;
         return $queryResolver->resolve($val, $args, $context, $info);
     }

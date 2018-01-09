@@ -7,11 +7,11 @@ use GraphQL\Type\Definition\EnumType;
 class Enum extends EnumType
 {  
 
-    protected $graphkit;
+    protected $graphit;
 
-    public function __construct(Graphit $graphkit, array $config)
+    public function __construct(Graphit $graphit, array $config)
     {
-        $this->graphkit = $graphkit;
+        $this->graphit = $graphit;
         parent::__construct($config);
     }
 

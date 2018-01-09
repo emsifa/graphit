@@ -8,13 +8,13 @@ use GraphQL\Type\Definition\Type as BaseType;
 class TypeRegistry
 {
 
-    protected $graphkit;
+    protected $graphit;
 
     protected $types = [];
 
-    public function __construct(Graphit $graphkit)
+    public function __construct(Graphit $graphit)
     {
-        $this->graphkit = $graphkit;
+        $this->graphit = $graphit;
     }
 
     /**
@@ -86,7 +86,7 @@ class TypeRegistry
     {
         $key = strtolower($name);
         if (!isset($this->types[$key])) {
-            $ast = $this->graphkit->getAst();
+            $ast = $this->graphit->getAst();
 
             if ($ast->hasType($name)) {
                 $this->types[$key] = $this->makeObjectType($name, ['name' => $name]);
@@ -104,20 +104,20 @@ class TypeRegistry
 
     protected function makeObjectType($name, array $config)
     {
-        $class = $this->graphkit->getTypeClass($name);
+        $class = $this->graphit->getTypeClass($name);
         if (!class_exists($class)) {
             $class = Type::class;
         }
-        return new $class($this->graphkit, $config);
+        return new $class($this->graphit, $config);
     }
 
     protected function makeEnumType($name, array $config)
     {
-        $class = $this->graphkit->getTypeClass($name);
+        $class = $this->graphit->getTypeClass($name);
         if (!class_exists($class)) {
             $class = Enum::class;
         }
-        return new $class($this->graphkit, $config);
+        return new $class($this->graphit, $config);
     }
 
     public function __call($method, $args)
