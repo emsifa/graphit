@@ -11,6 +11,7 @@ class AST
 
     protected $objectTypes = [];
     protected $enumTypes = [];
+    protected $inputTypes = [];
 
     protected $ast;
 
@@ -163,6 +164,25 @@ class AST
         return $this->enumTypes[$name];
     }
 
+    public function getInputTypeConfig($name)
+    {
+        if (!isset($this->inputTypes[$name])) {
+            $typeDef = $this->getInput($name);
+
+            if (!$typeDef) {
+                throw new \UnexpectedValueException("Input type '{$name}' is not defined in your .graphql file.");
+            }
+
+            $this->inputTypes[$name] = [
+                'name' => $name,
+                'description' => $this->resolveDescription($typeDef['description']),
+                'fields' => $this->resolveAstFields($typeDef['fields'])
+            ];
+        }
+
+        return $this->inputTypes[$name];
+    }
+
     protected function resolveAstFields(array &$astFields)
     {
         $fields = [];
@@ -189,9 +209,10 @@ class AST
     protected function resolveAstField(array &$astField)
     {
         $name = $astField['name']['value'];
+        $args = !empty($astField['arguments']) ? $astField['arguments'] : [];
         $config = [
             'type' => $this->resolveAstType($astField['type']),
-            'args' => $this->resolveAstArguments($astField['arguments']),
+            'args' => $this->resolveAstArguments($args),
         ];
 
         return [$name, $config];

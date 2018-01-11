@@ -114,6 +114,11 @@ class Graphit
         return $this->getTypeNamespace().'\\'.ucfirst($class);
     }
 
+    public function getInputClass($class)
+    {
+        return $this->getTypeNamespace().'\\'.ucfirst($class);
+    }
+
     public function getQueryClass($class)
     {
         return $this->getQueryNamespace().'\\'.ucfirst($class);

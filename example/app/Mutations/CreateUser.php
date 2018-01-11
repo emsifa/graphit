@@ -11,7 +11,7 @@ class CreateUser extends Mutation
     {
         return [
             'id' => 10,
-            'name' => $args['name'],
+            'name' => $args['input']['name'],
         ];
     }
 

@@ -8,7 +8,7 @@ type Query {
 }
 
 type Mutation {
-    createUser(name: String!): User!
+    createUser(input: UserInput!): User!
 }
 
 # Source: table books
@@ -40,10 +40,6 @@ interface Eloquent {
     deleted_at: String
 }
 
-input BookData {
-    id: Int!
-    title: String
-    type: BookType!
-    author: User!
-    something: String
+input UserInput {
+    name: String!
 }

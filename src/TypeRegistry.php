@@ -82,7 +82,7 @@ class TypeRegistry
         return BaseType::nonNull($wrappedType);
     }
 
-    public function getObjectOrEnumType($name)
+    public function getType($name)
     {
         $key = strtolower($name);
         if (!isset($this->types[$key])) {
@@ -95,6 +95,10 @@ class TypeRegistry
             } elseif($ast->hasEnum($name)) {
                 $this->types[$key] = $this->makeEnumType($name, ['name' => $name]);
                 $config = $ast->getEnumTypeConfig($name);
+                $this->types[$key]->setConfig($config);
+            } elseif($ast->hasInput($name)) {
+                $this->types[$key] = $this->makeInputType($name, ['name' => $name]);
+                $config = $ast->getInputTypeConfig($name);
                 $this->types[$key]->setConfig($config);
             }
         }
@@ -120,9 +124,18 @@ class TypeRegistry
         return new $class($this->graphit, $config);
     }
 
+    protected function makeInputType($name, array $config)
+    {
+        $class = $this->graphit->getInputClass($name);
+        if (!class_exists($class)) {
+            $class = Input::class;
+        }
+        return new $class($this->graphit, $config);
+    }
+
     public function __call($method, $args)
     {
-        return $this->getObjectOrEnumType($method);
+        return $this->getType($method);
     }
 
 }

@@ -6,7 +6,9 @@ require(__DIR__.'/app/bootstrap.php');
 
 $result = $graphit->execute("
     mutation {
-        createUser(name:\"tester\") {
+        createUser(input: {
+            name:\"tester\"
+        }) {
             id
             name
         }
