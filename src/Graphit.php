@@ -14,6 +14,9 @@ use GraphQL\Validator\Rules\QueryDepth;
 class Graphit
 {
 
+    use Concerns\Http;
+    use Concerns\GraphiQL;
+
     protected $type;
 
     protected $options = [];
@@ -121,12 +124,12 @@ class Graphit
         return $this->getMutationNamespace().'\\'.ucfirst($class);
     }
 
-    public function execute($gql)
+    public function execute($gql, $variables = null, $operationName = null)
     {
         $schema = $this->buildSchema();
 
         try {
-            $result = GraphQL::executeQuery($schema, $gql, $this->option('root'), null, null);
+            $result = GraphQL::executeQuery($schema, $gql, $this->option('root'), $variables, $operationName);
 
             if (is_callable($this->option('error.formatter'))) {
                 $result->setErrorFormatter($this->option('error.formatter'));
