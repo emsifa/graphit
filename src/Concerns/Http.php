@@ -10,14 +10,20 @@ trait Http
 
     public function executeFromHttp()
     {
-        $input = $this->getInputsFromHttp();
+        try {
+            $input = $this->getInputsFromHttp();
 
-        if (empty($input['query'])) {
-            return [
+            if (empty($input['query'])) {
+                throw new UnexpectedValueException("Query cannot be empty.");
+            }
+
+            $result = $this->execute($input['query'], $input['variables'], $input['operationName']);
+        } catch (\Exception $e) {
+            $result = [
                 'errors' => [
                     [
-                        'message' => "Empty query.",
-                        'category' => 'graphql',
+                        'message' => $e->getMessage(),
+                        'category' => 'exception',
                         'locations' => [
                             [
                                 'line' => 0,
@@ -29,7 +35,7 @@ trait Http
             ];
         }
 
-        return $this->execute($input['query'], $input['variables'], $input['operationName']);
+        return $result;
     }
 
     public function getInputsFromHttp()

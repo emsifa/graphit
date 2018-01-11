@@ -86,7 +86,12 @@ class AST
 
     public function getQueries()
     {
-        return $this->resolveAstFields($this->ast['query']['fields']);
+        return $this->resolveAstFields($this->getQuery()['fields']);
+    }
+
+    public function getMutations()
+    {
+        return $this->resolveAstFields($this->getMutation()['fields']);
     }
 
     public function getQuery()

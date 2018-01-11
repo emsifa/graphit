@@ -154,18 +154,26 @@ class Graphit
 
     public function buildSchema()
     {
-        $query = $this->makeRootQuery();
+        $query = $this->makeQuery();
+        $mutation = $this->makeMutation();
         $schema = new Schema([
-            'query' => $query
+            'query' => $query,
+            'mutation' => $mutation
         ]);
 
         return $schema;
     }
 
-    protected function makeRootQuery()
+    protected function makeQuery()
     {
         $queries = $this->ast->getQueries();
         return new RootQuery($this, $queries);
+    }
+
+    protected function makeMutation()
+    {
+        $mutations = $this->ast->getMutations();
+        return new RootMutation($this, $mutations);
     }
 
     protected function defaultOptions()
