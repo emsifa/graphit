@@ -12,6 +12,7 @@ class AST
     protected $objectTypes = [];
     protected $enumTypes = [];
     protected $inputTypes = [];
+    protected $interfaceTypes = [];
 
     protected $ast;
 
@@ -125,7 +126,6 @@ class AST
         return $this->hasInput($name) ? $this->ast['inputs'][$name] : null;
     }
 
-
     public function getObjectTypeConfig($name)
     {
         if (!isset($this->objectTypes[$name])) {
@@ -138,7 +138,8 @@ class AST
             $this->objectTypes[$name] = [
                 'name' => $name,
                 'description' => $this->resolveDescription($typeDef['description']),
-                'fields' => $this->resolveAstFields($typeDef['fields'])
+                'fields' => $this->resolveAstFields($typeDef['fields']),
+                'interfaces' => $this->resolveAstInterfaces($typeDef['interfaces'])
             ];
         }
 
@@ -162,6 +163,25 @@ class AST
         }
 
         return $this->enumTypes[$name];
+    }
+
+    public function getInterfaceTypeConfig($name)
+    {
+        if (!isset($this->interfaceTypes[$name])) {
+            $typeDef = $this->getInterface($name);
+
+            if (!$typeDef) {
+                throw new \UnexpectedValueException("Interface '{$name}' is not defined in your .graphql file.");
+            }
+
+            $this->interfaceTypes[$name] = [
+                'name' => $name,
+                'description' => $this->resolveDescription($typeDef['description']),
+                'fields' => $this->resolveAstFields($typeDef['fields'])
+            ];
+        }
+
+        return $this->interfaceTypes[$name];
     }
 
     public function getInputTypeConfig($name)
@@ -204,6 +224,13 @@ class AST
             ];
         }
         return $values;
+    }
+
+    protected function resolveAstInterfaces(array &$astInterfaces)
+    {
+        return array_map(function($interface) {
+            return $this->typeRegistry->getInterface($interface['name']['value']);
+        }, $astInterfaces);
     }
 
     protected function resolveAstField(array &$astField)

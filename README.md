@@ -9,7 +9,7 @@ Graphit - PHP GraphQL Framework
   - [x] Register Types
   - [x] Register Enums
   - [x] Register Inputs
-  - [ ] Register Interfaces
+  - [x] Register Interfaces
   - [ ] Register Unions
 - [x] Execute gql from HTTP
 - [x] GraphiQL integration

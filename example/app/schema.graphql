@@ -21,10 +21,13 @@ type Book {
     something: String
 }
 
-type User {
+type User implements Eloquent {
     id: Int!
     name: String
     books: [Book!]!
+    created_at: String!
+    updated_at: String!
+    deleted_at: String
 }
 
 enum BookType {

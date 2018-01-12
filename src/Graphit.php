@@ -104,6 +104,11 @@ class Graphit
         return $this->option('namespace').'\Queries';
     }
 
+    public function getInterfaceNamespace()
+    {
+        return $this->option('namespace').'\Interfaces';
+    }
+
     public function getTypeNamespace()
     {
         return $this->option('namespace').'\Types';
@@ -117,6 +122,11 @@ class Graphit
     public function getInputClass($class)
     {
         return $this->getTypeNamespace().'\\'.ucfirst($class);
+    }
+
+    public function getInterfaceClass($class)
+    {
+        return $this->getInterfaceNamespace().'\\'.ucfirst($class);
     }
 
     public function getQueryClass($class)

@@ -12,6 +12,8 @@ class TypeRegistry
 
     protected $types = [];
 
+    protected $interfaces = [];
+
     public function __construct(Graphit $graphit)
     {
         $this->graphit = $graphit;
@@ -82,6 +84,17 @@ class TypeRegistry
         return BaseType::nonNull($wrappedType);
     }
 
+    public function getInterface($name)
+    {
+        $key = strtolower($name);
+        if (!isset($this->interfaces[$key])) {
+            $this->interfaces[$key] = $this->makeInterfaceType($name, ['name' => $name]);
+            $config = $this->graphit->getAst()->getInterfaceTypeConfig($name);
+            $this->interfaces[$key]->setConfig($config);
+        }
+        return $this->interfaces[$key];
+    }
+
     public function getType($name)
     {
         $key = strtolower($name);
@@ -104,6 +117,15 @@ class TypeRegistry
         }
 
         return $this->types[$key];
+    }
+
+    protected function makeInterfaceType($name, array $config)
+    {
+        $class = $this->graphit->getInterfaceClass($name);
+        if (!class_exists($class)) {
+            $class = InterfaceType::class;
+        }
+        return new $class($this->graphit, $config);
     }
 
     protected function makeObjectType($name, array $config)
