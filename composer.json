@@ -1,4 +1,13 @@
 {
+    "name": "emsifa/graphit",
+    "description": "PHP GraphQL Framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Muhammad Syifa",
+            "email": "emsifa@gmail.com"
+        }
+    ],
     "require": {
         "webonyx/graphql-php": "^0.11.5"
     },
