@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+    		"php": "^7.0",
         "webonyx/graphql-php": "^0.11.5"
     },
     "autoload": {
