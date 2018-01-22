@@ -13,7 +13,7 @@ Graphit - PHP GraphQL Framework
   - [ ] Register Unions
 - [x] Execute gql from HTTP
 - [x] GraphiQL integration
-- [ ] AST caching
+- [x] AST caching
 - [ ] Framework Integrations
   - [ ] Laravel
   - [ ] Slim

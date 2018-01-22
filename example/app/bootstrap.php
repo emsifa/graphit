@@ -8,4 +8,5 @@ use Emsifa\Graphit\Graphit;
 $graphit = new Graphit([
     'schema' => __DIR__.'/schema.graphql',
     'namespace' => 'Example\App',
+    'cache' => __DIR__.'/cache.graphql.php'
 ]);

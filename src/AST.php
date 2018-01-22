@@ -19,10 +19,15 @@ class AST
     public function __construct(array $ast, TypeRegistry $typeRegistry)
     {
         $this->typeRegistry = $typeRegistry;
-        $this->ast = $this->mapAstDefinitions($ast);
+        $this->ast = $ast;
     }
 
-    private function mapAstDefinitions(array $ast)
+    public static function makeFromRawAst(array $ast, TypeRegistry $typeRegistry)
+    {
+        return new static(static::mapAstDefinitions($ast), $typeRegistry);
+    }
+
+    private static function mapAstDefinitions(array $ast)
     {
         $schema = null;
         $definitions = [
@@ -64,6 +69,11 @@ class AST
             'interfaces' => $definitions['InterfaceTypeDefinition'],
             'inputs' => $definitions['InputObjectTypeDefinition'],
         ];
+    }
+
+    public function getAST()
+    {
+        return $this->ast;
     }
 
     public function hasEnum($name)

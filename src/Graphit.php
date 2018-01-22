@@ -19,13 +19,25 @@ class Graphit
 
     protected $type;
 
+    protected $cacher;
+    protected $typeRegistry;
+    protected $ast;
+
     protected $options = [];
 
     public function __construct($options = [])
     {
         $this->options = array_merge($this->defaultOptions(), $options);
+        if ($this->options['cache']) {
+            $this->initCacher($this->options['cache']);
+        }
         $this->initTypeRegistry();
         $this->initAst();
+    }
+
+    protected function initCacher($cacheFile)
+    {
+        $this->cacher = new Cacher($this, $cacheFile);
     }
 
     protected function initTypeRegistry()
@@ -40,8 +52,19 @@ class Graphit
 
     protected function initAst()
     {
-        $astArray = $this->getAstArray();
-        $this->ast = new AST($astArray, $this->getTypeRegistry());
+        $cache = $this->getAstSchemaFromCache();
+        $typeRegistry = $this->getTypeRegistry();
+        if (!$cache) {
+            $schemaFile = $this->option('schema');
+            $document = Parser::parse(file_get_contents($schemaFile));
+            $astArray = ASTUtils::toArray($document);
+            $this->ast = AST::makeFromRawAst($astArray, $typeRegistry);
+            if ($this->cacher) {
+                $this->cacher->writeCache();
+            }
+        } else {
+            $this->ast = new AST($cache, $typeRegistry);
+        }
     }
 
     public function getAst()
@@ -49,21 +72,13 @@ class Graphit
         return $this->ast;
     }
 
-    public function getAstArray()
+    public function getAstSchemaFromCache()
     {
-        $cache = $this->getCacheAst();
-        if (!$cache) {
-            $schemaFile = $this->option('schema');
-            $document = Parser::parse(file_get_contents($schemaFile));
-            $astArray = ASTUtils::toArray($document);
+        if (!$this->cacher) {
+            return null;
+        } else {
+            return $this->cacher->getCache();
         }
-
-        return $astArray;
-    }
-
-    public function getCacheAst()
-    {
-        
     }
 
     public function option($key)
