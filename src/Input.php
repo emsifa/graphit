@@ -6,6 +6,7 @@ use GraphQL\Type\Definition\InputObjectType;
 
 class Input extends InputObjectType
 {
+    use Concerns\GraphitUtils;
 
     protected $graphit;
 

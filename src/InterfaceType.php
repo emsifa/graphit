@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 
 class InterfaceType extends BaseInterfaceType
 {  
+    use Concerns\GraphitUtils;
 
     protected $graphit;
 

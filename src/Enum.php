@@ -7,6 +7,8 @@ use GraphQL\Type\Definition\EnumType;
 class Enum extends EnumType
 {  
 
+    use Concerns\GraphitUtils;
+
     protected $graphit;
 
     public function __construct(Graphit $graphit, array $config)

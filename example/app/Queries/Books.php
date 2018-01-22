@@ -12,8 +12,8 @@ class Books extends Query
         return [
             [
                 'id' => 1,
-                'title' => 'Foo',
-                'type' => 'MAGAZINE',
+                'title' => 'John Doe',
+                'type' => $this->randomType,
                 // 'author' => [
                 //     'id' => 1,
                 //     'name' => 'Foobar'
@@ -21,8 +21,8 @@ class Books extends Query
             ],
             [
                 'id' => 2,
-                'title' => 'Bar',
-                'type' => 'NOVEL',
+                'title' => 'Jane Doe',
+                'type' => $this->randomType,
                 // 'author' => [
                 //     'id' => 1,
                 //     'name' => 'Foobar'

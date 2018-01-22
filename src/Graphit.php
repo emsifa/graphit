@@ -10,6 +10,7 @@ use GraphQL\Utils\BuildSchema;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\QueryComplexity;
 use GraphQL\Validator\Rules\QueryDepth;
+use Closure;
 
 class Graphit
 {
@@ -23,6 +24,7 @@ class Graphit
     protected $typeRegistry;
     protected $ast;
 
+    protected $container = [];
     protected $options = [];
 
     public function __construct($options = [])
@@ -218,6 +220,34 @@ class Graphit
             ],
             'root' => []
         ];
+    }
+
+    public function has($key)
+    {
+        return isset($this->container[$key]);
+    }
+
+    public function __get($key)
+    {
+        if (!$this->has($key)) {
+            return null;
+        }
+
+        $value = $this->container[$key];
+        if ($value instanceof Closure) {
+            return $value();
+        } else {
+            return $value;
+        }
+    }
+
+    public function __set($key, $value)
+    {
+        if ($value instanceof Closure) {
+            $value = $value->bindTo($this);
+        }
+
+        $this->container[$key] = $value;
     }
 
 }

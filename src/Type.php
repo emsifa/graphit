@@ -7,6 +7,8 @@ use GraphQL\Type\Definition\ObjectType;
 class Type extends ObjectType
 {  
 
+    use Concerns\GraphitUtils;
+
     protected $graphit;
 
     public function __construct(Graphit $graphit, array $config)
@@ -20,7 +22,7 @@ class Type extends ObjectType
     public function resolveField($val, $args, $context, $info)
     {
         $method = 'resolveField'.$info->fieldName;
-        if (is_callable([$this, $method])) {
+        if (method_exists($this, $method) && is_callable([$this, $method])) {
             return $this->{$method}($val, $args, $context, $info);
         }
         return $val[$info->fieldName];

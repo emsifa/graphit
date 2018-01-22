@@ -10,3 +10,8 @@ $graphit = new Graphit([
     'namespace' => 'Example\App',
     'cache' => __DIR__.'/cache.graphql.php'
 ]);
+
+$graphit->randomType = function () {
+    $types = ['MAGAZINE', 'NOVEL', 'COMIC'];
+    return $types[array_rand($types)];
+};
