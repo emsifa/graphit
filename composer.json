@@ -9,9 +9,9 @@
         }
     ],
     "require": {
-    		"php": "^7.0",
+        "php": "^7.0",
         "webonyx/graphql-php": "^0.11.5",
-        "rakit/console": "v0.1.0"
+        "rakit/console": "^v0.1"
     },
     "autoload": {
     	"psr-4": {
