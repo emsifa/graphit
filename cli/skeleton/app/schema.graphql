@@ -1,0 +1,34 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    usersPagination(limit: Int = 15, offset: Int = 0): UsersPagination!
+}
+
+type Mutation {
+    createUser(input: UserInput!): User!
+}
+
+# --------- USER TYPES ---------
+
+type User {
+    id: Int!
+    name: String
+    email: String
+    password: String
+}
+
+type UsersPagination {
+    users: [User!]!
+    total: Int!
+}
+
+input UserInput {
+    name: String!
+    email: String!
+    password: String!
+}
+
+# --------- USER TYPES ---------

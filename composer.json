@@ -10,12 +10,16 @@
     ],
     "require": {
     		"php": "^7.0",
-        "webonyx/graphql-php": "^0.11.5"
+        "webonyx/graphql-php": "^0.11.5",
+        "rakit/console": "v0.1.0"
     },
     "autoload": {
     	"psr-4": {
     		"Emsifa\\Graphit\\": "src/",
     		"Example\\App\\": "example/app/"
     	}
-    }
+    },
+    "bin": [
+        "graphit"
+    ]
 }
