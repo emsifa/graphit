@@ -7,9 +7,8 @@ require __DIR__ . '/Util.php';
 define('WORKING_DIR', realpath(''));
 
 $autoloadPaths = [
-    __DIR__ . '/../../autoload.php',
+    __DIR__ . '/../../../autoload.php',
     __DIR__ . '/../vendor/autoload.php',
-    __DIR__ . '/vendor/autoload.php'
 ];
 
 foreach ($autoloadPaths as $autoloadFile) {
@@ -18,6 +17,10 @@ foreach ($autoloadPaths as $autoloadFile) {
         define('VENDOR_DIR', dirname($autoloadFile));
         break;
     }
+}
+
+if (!defined('VENDOR_DIR')) {
+    throw new Exception("Cannot run graphit CLI application. Vendor directory not found in any possible paths.");
 }
 
 $app = new App();

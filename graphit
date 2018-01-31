@@ -1,5 +1,22 @@
 #!/usr/bin/env php
 <?php
 
-$app = require(__DIR__ . '/cli/app.php');
+$appPaths = [
+    __DIR__ . '/cli/app.php',
+    __DIR__ . '/../emsifa/graphit/cli/app.php'
+];
+
+$app = null;
+
+foreach ($appPaths as $file) {
+    if (file_exists($file)) {
+        $app = require($file);
+        break;
+    }
+}
+
+if (is_null($app)) {
+    throw new Exception("CLI app not found in any possible paths.");
+}
+
 $app->run();
