@@ -18,6 +18,26 @@
       #graphiql {
         height: 100vh;
       }
+      .jwt-token {
+        font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
+        padding: 7px 14px 6px;
+        font-size: 14px;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        left: 0px;
+        width: 300px;
+        margin: auto;
+      }
+
+      .jwt-token input {
+        width: 100%;
+        font-size: 14px;
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 8px 12px;
+        box-sizing: border-box;
+      }
     </style>
 
     <!--
@@ -45,6 +65,8 @@
   </head>
   <body>
     <div id="graphiql">Loading...</div>
+    <div class="jwt-token"><input id="jwt-token" placeholder="JWT Token"></div>
+
     <script>
 
       /**
@@ -111,12 +133,19 @@
       function graphQLFetcher(graphQLParams) {
         // This example expects a GraphQL server at the path /graphql.
         // Change this to point wherever you host your GraphQL server.
+        var jwtToken = document.getElementById('jwt-token').value;
+        var headers = {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
+
+        if (jwtToken) {
+          headers['Authorization'] = 'Bearer ' + jwtToken;
+        }
+
         return fetch('<?= $url_graphql ?>', {
           method: 'post',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
+          headers: headers,
           body: JSON.stringify(graphQLParams),
           credentials: 'include',
         }).then(function (response) {
