@@ -17,6 +17,8 @@ class Graphit
 
     use Concerns\Http;
     use Concerns\GraphiQL;
+    use Concerns\MacroInstance;
+    use Concerns\MacroStatic;
 
     protected $type;
 
