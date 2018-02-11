@@ -4,45 +4,60 @@ schema {
 }
 
 type Query {
-    books(page: Int): [Book!]!
+    usersPagination(limit: Int = 15, offset: Int = 0, search: String): UsersPagination!
 }
 
 type Mutation {
-    createUser(input: UserInput!): User!
+    login(username: String!, password: String!, remember: Boolean = false): LoginResult!
+    register(input: RegisterInput!): User!
 }
 
-# Source: table books
-type Book {
-    id: Int!
-    title: String
-    type: BookType!
-    # Book author
-    author: User!
-    something: String
-}
+# ----------------- OBJECT TYPES -----------------
 
 type User implements Eloquent {
     id: Int!
-    name: String
-    books: [Book!]!
+    name: String!
+    email: String!
+    avatar: String!
+    password: String!
+    role: UserRole!
     created_at: String!
     updated_at: String!
     deleted_at: String
 }
 
-enum BookType {
-    MAGAZINE # Buku majalah
-    NOVEL # Kumpulan novel
-    COMIC # Komik & manga
+type UsersPagination {
+    users: [User]!
+    total: Int!
 }
+
+type LoginResult {
+    token: String
+    user: User!
+}
+
+# ----------------- INPUTS -----------------
+
+input RegisterInput {
+    name: String!
+    email: String!
+    password: String!
+    role: UserRole!
+    avatar: Upload
+}
+
+# ----------------- ENUMS -----------------
+
+enum UserRole {
+    admin
+    member
+}
+
+# ----------------- INTERFACES -----------------
 
 interface Eloquent {
     id: Int!
     created_at: String!
     updated_at: String!
     deleted_at: String
-}
-
-input UserInput {
-    name: String!
 }

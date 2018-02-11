@@ -2,62 +2,51 @@
 
 namespace Emsifa\Graphit\Concerns;
 
+use GraphQL\Server\Helper;
+use GraphQL\Server\StandardServer;
+use GraphQL\Upload\UploadMiddleware;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\ServerRequestFactory;
 use RuntimeException;
 use UnexpectedValueException;
 
 trait Http
 {
 
-    public function executeFromHttp()
+    public function executeFromHttp(ServerRequestInterface $request = null, array $serverConfig = [])
     {
-        try {
-            $input = $this->getInputsFromHttp();
-
-            if (empty($input['query'])) {
-                throw new UnexpectedValueException("Query cannot be empty.");
-            }
-
-            $result = $this->execute($input['query'], $input['variables'], $input['operationName']);
-        } catch (\Exception $e) {
-            $result = [
-                'errors' => [
-                    [
-                        'message' => $e->getMessage(),
-                        'category' => 'exception',
-                        'locations' => [
-                            [
-                                'line' => 0,
-                                'column' => 0
-                            ]
-                        ]
-                    ]
-                ]
-            ];
+        if (!$request) {
+            $request = $this->makePsrRequest();
         }
 
-        return $result;
+        $serverConfig = $this->mergeServerConfig($serverConfig);
+        $server = new StandardServer($serverConfig);
+        return $server->executePsrRequest($request);
     }
 
-    public function getInputsFromHttp()
+    protected function makePsrRequest()
     {
-        if (!isset($_SERVER['REQUEST_METHOD'])) {
-            throw new RuntimeException("Cannot get inputs from HTTP. Invalid \$_SERVER variable. Make sure you running this using PHP CGI.");
-        }
+        $request = ServerRequestFactory::fromGlobals();
+        $request = $request->withParsedBody(json_decode($request->getBody()->getContents(), true));
+        $uploadMiddleware = new UploadMiddleware();
+        $request = $uploadMiddleware->processRequest($request);
 
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $input['query'] = isset($_GET['query']) ? $_GET['query'] : '';
-            $input['variables'] = isset($_GET['variables']) ? $_GET['variables'] : null;
-            $input['operationName'] = isset($_GET['operationName']) ? $_GET['operationName'] : null;
-        } else {
-            $body = file_get_contents('php://input');
-            $input = array_merge([
-                'query' => '',
-                'variables' => null,
-                'operationName' => null
-            ], json_decode($body, true) ?: []);
-        }
+        return $request;
+    }
 
-        return $input;
+    protected function mergeServerConfig(array $config)
+    {
+        if (!isset($config['debug']) && $debug = $this->option('debug')) {
+            $config['debug'] = $debug;
+        }
+        if (!isset($config['errorFormatter']) && $formatter = $this->option('error.formatter')) {
+            $config['errorFormatter'] = $formatter;
+        }
+        if (!isset($config['errorsHandler']) && $handler = $this->option('error.handler')) {
+            $config['errorsHandler'] = $handler;
+        }
+        $config['schema'] = $this->buildSchema();
+        return $config;
     }
 
 }

@@ -2,23 +2,22 @@
 
 namespace Emsifa\Graphit;
 
+use Closure;
 use GraphQL\GraphQL;
 use GraphQL\Language\Parser;
-use GraphQL\Schema;
+use GraphQL\Upload\UploadType;
 use GraphQL\Utils\AST as ASTUtils;
-use GraphQL\Utils\BuildSchema;
-use GraphQL\Validator\DocumentValidator;
-use GraphQL\Validator\Rules\QueryComplexity;
-use GraphQL\Validator\Rules\QueryDepth;
-use Closure;
 
 class Graphit
 {
 
+    use Concerns\Container;
     use Concerns\Http;
     use Concerns\GraphiQL;
     use Concerns\MacroInstance;
     use Concerns\MacroStatic;
+    use Concerns\NamespaceAndClassGetter;
+    use Concerns\Schema;
 
     protected $type;
 
@@ -37,21 +36,9 @@ class Graphit
         }
         $this->initTypeRegistry();
         $this->initAst();
-    }
-
-    protected function initCacher($cacheFile)
-    {
-        $this->cacher = new Cacher($this, $cacheFile);
-    }
-
-    protected function initTypeRegistry()
-    {
-        $this->typeRegistry = new TypeRegistry($this);
-    }
-
-    public function getTypeRegistry()
-    {
-        return $this->typeRegistry;
+        $this->setType('Upload', function () {
+            return new UploadType;
+        });
     }
 
     protected function initAst()
@@ -85,6 +72,31 @@ class Graphit
         }
     }
 
+    public function setType($name, $type)
+    {
+        return $this->typeRegistry->setType($name, $type);
+    }
+
+    public function getType($name)
+    {
+        return $this->typeRegistry->getType($name);
+    }
+
+    protected function initCacher($cacheFile)
+    {
+        $this->cacher = new Cacher($this, $cacheFile);
+    }
+
+    protected function initTypeRegistry()
+    {
+        $this->typeRegistry = new TypeRegistry($this);
+    }
+
+    public function getTypeRegistry()
+    {
+        return $this->typeRegistry;
+    }
+
     public function option($key)
     {
         return isset($this->options[$key]) ? $this->options[$key] : null;
@@ -98,64 +110,6 @@ class Graphit
     public function setOptions($options = [])
     {
         $this->options = array_merge($this->options, $options);
-    }
-
-    public function getTypeFactory()
-    {
-        if (!$this->type) {
-            $this->initTypeFactory();
-        }
-        return $this->type;
-    }
-
-    public function getSchemaFile()
-    {
-        return $this->option('schema');
-    }
-
-    public function getMutationNamespace()
-    {
-        return $this->option('namespace').'\Mutations';
-    }
-
-    public function getQueryNamespace()
-    {
-        return $this->option('namespace').'\Queries';
-    }
-
-    public function getInterfaceNamespace()
-    {
-        return $this->option('namespace').'\Interfaces';
-    }
-
-    public function getTypeNamespace()
-    {
-        return $this->option('namespace').'\Types';
-    }
-
-    public function getTypeClass($class)
-    {
-        return $this->getTypeNamespace().'\\'.ucfirst($class);
-    }
-
-    public function getInputClass($class)
-    {
-        return $this->getTypeNamespace().'\\'.ucfirst($class);
-    }
-
-    public function getInterfaceClass($class)
-    {
-        return $this->getInterfaceNamespace().'\\'.ucfirst($class);
-    }
-
-    public function getQueryClass($class)
-    {
-        return $this->getQueryNamespace().'\\'.ucfirst($class);
-    }
-
-    public function getMutationClass($class)
-    {
-        return $this->getMutationNamespace().'\\'.ucfirst($class);
     }
 
     public function execute($gql, $variables = null, $operationName = null)
@@ -173,6 +127,8 @@ class Graphit
                 $result->setErrorsHandler($this->option('error.handler'));
             }
 
+            $debug = $this->option('debug');
+
             return $result->toArray();
         } catch (\Exception $e) {
             return [
@@ -184,30 +140,6 @@ class Graphit
                 ]
             ];
         }
-    }
-
-    public function buildSchema()
-    {
-        $query = $this->makeQuery();
-        $mutation = $this->makeMutation();
-        $schema = new Schema([
-            'query' => $query,
-            'mutation' => $mutation
-        ]);
-
-        return $schema;
-    }
-
-    protected function makeQuery()
-    {
-        $queries = $this->ast->getQueries();
-        return new RootQuery($this, $queries);
-    }
-
-    protected function makeMutation()
-    {
-        $mutations = $this->ast->getMutations();
-        return new RootMutation($this, $mutations);
     }
 
     protected function defaultOptions()
@@ -222,34 +154,6 @@ class Graphit
             ],
             'root' => []
         ];
-    }
-
-    public function has($key)
-    {
-        return isset($this->container[$key]);
-    }
-
-    public function __get($key)
-    {
-        if (!$this->has($key)) {
-            return null;
-        }
-
-        $value = $this->container[$key];
-        if ($value instanceof Closure) {
-            return $value();
-        } else {
-            return $value;
-        }
-    }
-
-    public function __set($key, $value)
-    {
-        if ($value instanceof Closure) {
-            $value = $value->bindTo($this);
-        }
-
-        $this->container[$key] = $value;
     }
 
 }

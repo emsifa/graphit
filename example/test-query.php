@@ -6,18 +6,17 @@ require(__DIR__.'/app/bootstrap.php');
 
 $result = $graphit->execute("
     {
-        books {
-            id,
-            title,
-            type,
-            author {
+        usersPagination (
+            limit: 20
+            offset: 5
+        ) {
+            users {
                 id
                 name
-                books {
-                   id,
-                   title
-                }
+                email
+                role
             }
+            total
         }
     }
 ");

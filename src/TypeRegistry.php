@@ -4,6 +4,9 @@ namespace Emsifa\Graphit;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type as BaseType;
+use Closure;
+use InvalidArgumentException;
+use RuntimeException;
 
 class TypeRegistry
 {
@@ -97,7 +100,7 @@ class TypeRegistry
 
     public function getType($name)
     {
-        $key = strtolower($name);
+        $key = $name;
         if (!isset($this->types[$key])) {
             $ast = $this->graphit->getAst();
 
@@ -113,10 +116,24 @@ class TypeRegistry
                 $this->types[$key] = $this->makeInputType($name, ['name' => $name]);
                 $config = $ast->getInputTypeConfig($name);
                 $this->types[$key]->setConfig($config);
+            } else {
+                throw new RuntimeException("Type '{$name}' is not defined.");
             }
+        } elseif (is_string($this->types[$key])) {
+            $this->types[$key] = new $this->types[$key];
+        } elseif ($this->types[$key] instanceof Closure) {
+            $this->types[$key] = $this->types[$key]->bindTo($this->graphit)();
         }
 
         return $this->types[$key];
+    }
+
+    public function setType($name, $type)
+    {
+        if (!is_string($type) && false == $type instanceof Closure && false == $type instanceof BaseType) {
+            throw new InvalidArgumentException("Type definition must be string class name, closure, or instanceof '".BaseType::class."'.");
+        }
+        $this->types[$name] = $type;
     }
 
     protected function makeInterfaceType($name, array $config)

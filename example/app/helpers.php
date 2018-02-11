@@ -7,6 +7,6 @@ function dump_ast(array $ast, $filename = 'dump.schema.json') {
 }
 
 function dd() {
-    print_r(func_get_args());
+    var_dump(func_get_args());
     exit;
 }
