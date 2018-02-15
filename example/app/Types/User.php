@@ -9,7 +9,11 @@ class User extends Type
 
     public function resolveFieldAvatar($value)
     {
-        return (isset($value['vatar']) && $value['avatar']) ? $value['avatar'] : 'uploads/default-avatar.png';
+        if (!isset($value['avatar']) || !$value['avatar']) {
+            return 'uploads/default-avatar.png';
+        } else {
+            return $value['avatar'];
+        }
     }
 
 }
