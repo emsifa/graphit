@@ -14,9 +14,12 @@ $graphit = new Graphit([
     'debug' => Debug::INCLUDE_DEBUG_MESSAGE
 ]);
 
+// Add custom file type
 $graphit->setType('Image', function () {
     return new FileType([
-        'mimes' => ['image/jpeg', 'image/png']
+        'mimes' => ['image/jpeg', 'image/png'],
+        // 'minSize' => (1024 * 1024),
+        'maxSize' => (2 * 1024 * 1024), // 2M
     ]);
 });
 
