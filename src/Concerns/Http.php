@@ -8,7 +8,7 @@ use GraphQL\Upload\UploadMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use UnexpectedValueException;
-use Zend\Diactoros\ServerRequestFactory;
+use Nyholm\Psr7\Factory\ServerRequestFactory;
 
 trait Http
 {
@@ -30,7 +30,18 @@ trait Http
 
     protected function makePsrRequest()
     {
-        return ServerRequestFactory::fromGlobals();
+        $factory = new ServerRequestFactory;
+        $request = $factory->createServerRequestFromGlobals();
+
+        $contentTypes = $request->getHeader('content-type');
+        if (isset($contentTypes[0]) && $contentTypes[0] == 'application/json') {
+            // $body = $request->getBody()->getContents(); // IDK, It returns empty in nyholm/psr7.
+            // So we just manually get php://input contents
+            $body = file_get_contents('php://input');
+            $request = $request->withParsedBody(json_decode($body, true));
+        }
+
+        return $request;
     }
 
     protected function mergeServerConfig(array $config)
