@@ -17,6 +17,7 @@ Untuk tujuan tersebut, Graphit menghadirkan fitur-fitur sebagai berikut:
 * ~~Memaksa~~ Membantu menciptakan struktur direktori yang lebih mudah dipahami.
 * _AST caching_ untuk mempercepat performa aplikasi.
 * Depencency Injection (DI) Container.
+* Upload file mengikuti spesifikasi [_graphql-multipart-request-spec_](https://github.com/jaydenseric/graphql-multipart-request-spec).
 * Integrasi [GraphiQL](https://github.com/graphql/graphiql).
 * Mudah di integrasikan ke beberapa framework PHP populer.
 
@@ -31,11 +32,11 @@ composer require emsifa/graphit:dev-master
 
 ## Setup
 
-> On progress
+> On progress (lihat di folder example)
 
 ## Konfigurasi
 
-> On progress
+> On progress (lihat di folder example)
 
 ## TODOS
 
