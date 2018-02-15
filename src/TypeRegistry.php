@@ -123,6 +123,7 @@ class TypeRegistry
             $this->types[$key] = new $this->types[$key];
         } elseif ($this->types[$key] instanceof Closure) {
             $this->types[$key] = $this->types[$key]->bindTo($this->graphit)();
+            $this->types[$key]->name = $name;
         }
 
         return $this->types[$key];

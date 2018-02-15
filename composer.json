@@ -12,7 +12,6 @@
         "php": "^7.1",
         "webonyx/graphql-php": "^0.11.5",
         "rakit/console": "^v0.1",
-        "ecodev/graphql-upload": "^2.0",
         "zendframework/zend-diactoros": "^1.7"
     },
     "autoload": {

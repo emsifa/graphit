@@ -7,18 +7,9 @@ use Emsifa\Graphit\Type;
 class User extends Type
 {
 
-    public function resolveFieldBooks()
+    public function resolveFieldAvatar($value)
     {
-        return [
-            [
-                'id' => 1,
-                'title' => 'Author Book',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Author Book 2',
-            ]
-        ];
+        return (isset($value['vatar']) && $value['avatar']) ? $value['avatar'] : 'uploads/default-avatar.png';
     }
 
 }

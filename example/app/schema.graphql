@@ -43,7 +43,7 @@ input RegisterInput {
     email: String!
     password: String!
     role: UserRole!
-    avatar: Upload
+    avatar: File
 }
 
 # ----------------- ENUMS -----------------

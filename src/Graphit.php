@@ -3,6 +3,7 @@
 namespace Emsifa\Graphit;
 
 use Closure;
+use Emsifa\Graphit\FileType;
 use GraphQL\GraphQL;
 use GraphQL\Language\Parser;
 use GraphQL\Upload\UploadType;
@@ -36,8 +37,8 @@ class Graphit
         }
         $this->initTypeRegistry();
         $this->initAst();
-        $this->setType('Upload', function () {
-            return new UploadType;
+        $this->setType('File', function () {
+            return new FileType;
         });
     }
 
@@ -117,7 +118,8 @@ class Graphit
         $schema = $this->buildSchema();
 
         try {
-            $result = GraphQL::executeQuery($schema, $gql, $this->option('root'), $variables, $operationName);
+            $context = null;
+            $result = GraphQL::executeQuery($schema, $gql, $this->option('root'), $context, $variables, $operationName);
 
             if (is_callable($this->option('error.formatter'))) {
                 $result->setErrorFormatter($this->option('error.formatter'));

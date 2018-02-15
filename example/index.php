@@ -15,13 +15,15 @@ require(__DIR__.'/app/bootstrap.php');
 $requestHeaders = getallheaders();
 $contentType = $requestHeaders['Content-Type'];
 
-if ($contentType == 'application/json') {
+if ($_SERVER['REQUEST_METHOD'] != 'GET' || $contentType == 'application/json') {
     // Execute query
-    $result = $graphit->executeFromHttp(null);
+    $result = $graphit->executeFromHttp();
     
     header('Content-type: application/json');
     echo json_encode($result, JSON_PRETTY_PRINT);
 } else {
     // Render graphiql
-    echo $graphit->renderGraphiql();
+    echo $graphit->renderGraphiql([
+        'url_graphql' => ''
+    ]);
 }

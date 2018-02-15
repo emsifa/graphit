@@ -1,3 +1,5 @@
 vendor/
 composer.lock
 example/app/cache.graphql.php
+example/uploads/*
+!example/uploads/.gitkeep

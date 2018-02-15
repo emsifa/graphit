@@ -9,7 +9,12 @@ class Register extends Mutation
 
     public function resolve($root, $args, $ctx, $info)
     {
-        return $this->usersRepository->create($args['input']);
+        $data = $args['input'];
+        if (isset($data['avatar']) &&$avatar = $data['avatar']) {
+            $avatar->moveTo(__DIR__.'/../../uploads/' . $avatar->getClientFilename());
+            $data['avatar'] = 'uploads/' . $avatar->getClientFilename();
+        }
+        return $this->usersRepository->create($data);
     }
 
 }
