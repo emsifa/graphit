@@ -3,6 +3,7 @@
 namespace Emsifa\Graphit\CLI;
 
 use Rakit\Console\App as ConsoleApp;
+use Emsifa\Graphit\Graphit;
 
 class App extends ConsoleApp
 {

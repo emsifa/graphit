@@ -14,6 +14,8 @@ class InitCommand extends Command
 
     protected $skeletonDir;
 
+    protected $publicFile;
+
     public function __construct()
     {
         $this->skeletonDir = __DIR__ . '/../../../skeleton';
@@ -41,6 +43,12 @@ class InitCommand extends Command
         if ($generatePublic) {
             $this->generatePublicFiles($appPath, $params);
         }
+
+        // Generate CLI App
+        $generateCLI = $this->confirm("Do you want to generate CLI application in current directory?", false);
+        if ($generateCLI) {
+            $this->generateCLIApplication($appPath, $params);
+        }
     }
 
     private function generateAppFiles($appPath, array $params)
@@ -67,6 +75,40 @@ class InitCommand extends Command
         $content = Util::replaceFileContents($sourceFile, $params);
         Util::putFile($publicFile, $content);
         $this->writeln("> Create file '{$publicFile}'.");
+
+        $this->publicFile = $publicFile;
+    }
+
+    private function generateCLIApplication($appPath, array $params)
+    {
+        $workingDir = $this->getWorkingPath();
+        $filename = $this->ask("What filename for this CLI application?", "graphit");
+        $dest = $workingDir.'/'.$filename;
+        
+        if (is_file($dest)) {
+            if (!$this->confirm("File '{$filename}' already exists. Do you want to replace it?", false)) {
+                return;
+            }
+        }
+
+        if ($this->publicFile) {
+            $template = $this->skeletonDir.'/console-with-serve.php';
+        } else {
+            $template = $this->skeletonDir.'/console-without-serve.php';
+        }
+
+        $params['BOOTSTRAP_FILE'] = Util::getRelativePath($workingDir, realpath($appPath).'/graphit.php');
+        if ($this->publicFile) {
+            $params['PUBLIC_PATH'] = Util::getRelativePath($workingDir, dirname($this->publicFile));
+            $params['PUBLIC_FILE'] = pathinfo($this->publicFile, PATHINFO_BASENAME);
+        }
+        $content = Util::replaceFileContents($template, $params);
+        Util::putFile($dest, $content);
+        $this->writeln("> Create file '{$filename}'");
+
+        $this->write("Now you can run your CLI application by typing '", 'blue');
+        $this->write("php {$filename} <command>", 'green');
+        $this->writeln("' in this directory.", 'blue');
     }
 
     private function findVendorDir()
