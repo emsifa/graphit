@@ -13,7 +13,7 @@ Seperti framework pada umumnya, Graphit dibuat bertujuan untuk:
 
 Untuk tujuan tersebut, Graphit menghadirkan fitur-fitur sebagai berikut:
 
-* Mempermudah definisi _schema_ dengan graphql IDL.
+* Mempermudah definisi _schema_ dengan [graphql SDL](https://blog.graph.cool/graphql-sdl-schema-definition-language-6755bcb9ce51).
 * ~~Memaksa~~ Membantu menciptakan struktur direktori yang lebih mudah dipahami.
 * _AST caching_ untuk mempercepat performa aplikasi.
 * Depencency Injection (DI) Container.
