@@ -12,14 +12,17 @@ class InitCommand extends Command
 
     protected $description = 'Init graphit skeleton app.';
 
+    protected $skeletonDir;
+
+    public function __construct()
+    {
+        $this->skeletonDir = __DIR__ . '/../../../skeleton';
+    }
+    
     public function handle($appPath)
     {
         $namespace = trim($this->ask("Application namespace?", 'App'), '\\');
-        $skeletonDir = __DIR__ . '/../../../skeleton';
-        $skeletonAppDir = $skeletonDir . '/app';
-        $skeletonPublicDir = $skeletonDir . '/public';
 
-        // Get relative path to vendor dir
         $vendorDir = $this->findVendorDir();
         if (!$vendorDir) {
             throw new \UnexpectedValueException("We cannot find vendor directory in your project.");
@@ -30,6 +33,19 @@ class InitCommand extends Command
             'VENDOR_PATH' => Util::getRelativePath($appPath, $vendorDir),
         ];
 
+        // Generate Application Files
+        $this->generateAppFiles($appPath, $params);
+
+        // Generate Public Files
+        $generatePublic = $this->confirm("Do you want to generate public file to handle http request in PHP native way?", true);
+        if ($generatePublic) {
+            $this->generatePublicFiles($appPath, $params);
+        }
+    }
+
+    private function generateAppFiles($appPath, array $params)
+    {
+        $skeletonAppDir = $this->skeletonDir.'/app';
         $appFiles = Util::getFiles($skeletonAppDir);
         foreach ($appFiles as $file) {
             $dest = str_replace($skeletonAppDir, $appPath, $file);
@@ -37,19 +53,20 @@ class InitCommand extends Command
             Util::putFile($dest, $content);
             $this->writeln("> Create file '{$dest}'.");
         }
+    }
 
-        $generatePublic = $this->confirm("Do you want to generate public file to handle http request in PHP native way?", true);
-        if ($generatePublic) {
-            $sourceFile = $skeletonPublicDir . '/index.php';
-            $publicFile = $this->ask("Where should we put public file?", './public_html/graphql.php');
-            if (!preg_match("/\.php$/", $publicFile)) {
-                $publicFile .= '/graphql.php';
-            }
-            $params['APP_PATH'] = Util::getRelativePath(dirname($publicFile), $appPath);
-            $content = Util::replaceFileContents($sourceFile, $params);
-            Util::putFile($publicFile, $content);
-            $this->writeln("> Create file '{$publicFile}'.");
+    private function generatePublicFiles($appPath, array $params)
+    {
+        $skeletonPublicDir = $this->skeletonDir.'/public';
+        $sourceFile = $skeletonPublicDir . '/index.php';
+        $publicFile = $this->ask("Where should we put public file?", './public_html/graphql.php');
+        if (!preg_match("/\.php$/", $publicFile)) {
+            $publicFile .= '/graphql.php';
         }
+        $params['APP_PATH'] = Util::getRelativePath(dirname($publicFile), $appPath);
+        $content = Util::replaceFileContents($sourceFile, $params);
+        Util::putFile($publicFile, $content);
+        $this->writeln("> Create file '{$publicFile}'.");
     }
 
     private function findVendorDir()
@@ -70,6 +87,7 @@ class InitCommand extends Command
         }
 
         return $this->findVendorDirFromWorkingPath();
+    
     }
 
     private function findVendorDirFromWorkingPath()
