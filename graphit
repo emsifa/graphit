@@ -1,22 +1,25 @@
 #!/usr/bin/env php
 <?php
 
-$appPaths = [
-    __DIR__ . '/cli/app.php',
-    __DIR__ . '/../emsifa/graphit/cli/app.php'
+use Emsifa\Graphit\CLI\App;
+
+$vendorDirs = [
+    __DIR__.'/../../',
+    __DIR__.'/vendor',
 ];
 
-$app = null;
-
-foreach ($appPaths as $file) {
-    if (file_exists($file)) {
-        $app = require($file);
-        break;
+foreach ($vendorDirs as $vendorDir) {
+    if (is_file($vendorDir.'/autoload.php')) {
+        define('VENDOR_DIR', $vendorDir);
     }
 }
 
-if (is_null($app)) {
-    throw new Exception("CLI app not found in any possible paths.");
+if (!defined('VENDOR_DIR')) {
+    throw new Exception("We cannot find vendor directory in this project.");
 }
+
+require_once(VENDOR_DIR.'/autoload.php');
+
+$app = new App($argv);
 
 $app->run();

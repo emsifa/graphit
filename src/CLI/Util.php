@@ -1,5 +1,7 @@
 <?php
 
+namespace Emsifa\Graphit\CLI;
+
 class Util
 {
 

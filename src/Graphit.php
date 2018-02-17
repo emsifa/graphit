@@ -35,19 +35,26 @@ class Graphit
         if ($this->options['cache']) {
             $this->initCacher($this->options['cache']);
         }
+        if (isset($options['schema'])) {
+            $this->loadSchemaFile($options['schema']);
+        }
+    }
+
+    public function loadSchemaFile($file)
+    {
         $this->initTypeRegistry();
-        $this->initAst();
+        $this->initAst($file);
         $this->setType('File', function () {
             return new FileType;
         });
     }
 
-    protected function initAst()
+    protected function initAst($file)
     {
         $cache = $this->getAstSchemaFromCache();
         $typeRegistry = $this->getTypeRegistry();
         if (!$cache) {
-            $schemaFile = $this->option('schema');
+            $schemaFile = $file;
             $document = Parser::parse(file_get_contents($schemaFile));
             $astArray = ASTUtils::toArray($document);
             $this->ast = AST::makeFromRawAst($astArray, $typeRegistry);
@@ -147,7 +154,6 @@ class Graphit
     protected function defaultOptions()
     {
         return [
-            'schema' => 'schema.graphql',
             'namespace' => 'App',
             'cache' => false,
             'rules' => [
