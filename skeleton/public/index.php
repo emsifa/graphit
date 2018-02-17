@@ -12,5 +12,7 @@ if ($contentType == 'application/json') {
     echo json_encode($result);
 } else {
     // Render graphiql
-    echo $graphit->renderGraphiql();
+    echo $graphit->renderGraphiql([
+        'url_graphql' => '/{URL_GRAPHIQL}'
+    ]);
 }

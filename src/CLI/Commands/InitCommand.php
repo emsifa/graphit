@@ -71,6 +71,7 @@ class InitCommand extends Command
         if (!preg_match("/\.php$/", $publicFile)) {
             $publicFile .= '/graphql.php';
         }
+        $params['URL_GRAPHIQL'] = basename($publicFile);
         $params['APP_PATH'] = Util::getRelativePath(dirname($publicFile), $appPath);
         $content = Util::replaceFileContents($sourceFile, $params);
         Util::putFile($publicFile, $content);
