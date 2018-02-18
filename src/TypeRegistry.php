@@ -108,13 +108,16 @@ class TypeRegistry
                 $this->types[$key] = $this->makeObjectType($name, ['name' => $name]);
                 $config = $ast->getObjectTypeConfig($name);
                 $this->types[$key]->config = $config;
+                $this->types[$key]->description = $config['description'];
             } elseif($ast->hasEnum($name)) {
                 $this->types[$key] = $this->makeEnumType($name, ['name' => $name]);
                 $config = $ast->getEnumTypeConfig($name);
+                $this->types[$key]->description = $config['description'];
                 $this->types[$key]->setConfig($config);
             } elseif($ast->hasInput($name)) {
                 $this->types[$key] = $this->makeInputType($name, ['name' => $name]);
                 $config = $ast->getInputTypeConfig($name);
+                $this->types[$key]->description = $config['description'];
                 $this->types[$key]->setConfig($config);
             } else {
                 throw new RuntimeException("Type '{$name}' is not defined.");

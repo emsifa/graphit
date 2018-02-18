@@ -250,6 +250,7 @@ class AST
         $config = [
             'type' => $this->resolveAstType($astField['type']),
             'args' => $this->resolveAstArguments($args),
+            'description' => $this->resolveDescription($astField['description'])
         ];
 
         return [$name, $config];
