@@ -283,7 +283,7 @@ class AST
         $config = [
             'type' => $this->resolveAstType($astArg['type']),
             'description' => $this->resolveDescription($astArg['description']),
-            'defaultValue' => $astArg['defaultValue']
+            'defaultValue' => $astArg['defaultValue']['value']
         ];
 
         return [$name, $config];
