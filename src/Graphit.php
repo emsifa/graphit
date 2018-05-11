@@ -14,7 +14,7 @@ class Graphit
 
     use Concerns\Container;
     use Concerns\Http;
-    use Concerns\GraphiQL;
+    use Concerns\Playground;
     use Concerns\MacroInstance;
     use Concerns\MacroStatic;
     use Concerns\NamespaceAndClassGetter;

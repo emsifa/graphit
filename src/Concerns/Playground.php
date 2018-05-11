@@ -5,10 +5,10 @@ namespace Emsifa\Graphit\Concerns;
 use RuntimeException;
 use UnexpectedValueException;
 
-trait GraphiQL
+trait Playground
 {
 
-    public function renderGraphiql(array $options = [])
+    public function renderPlayground(array $options = [])
     {
         $options = array_merge([
             'url_graphql' => '/graphql'
@@ -17,7 +17,7 @@ trait GraphiQL
         extract($options);
 
         ob_start();
-        require(__DIR__.'/../../graphiql/graphiql.php');
+        require(__DIR__ . '/../../playground/playground.php');
         return ob_get_clean();
     }
 
